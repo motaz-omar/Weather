@@ -10,7 +10,6 @@ function App() {
   const [currentWeather, setCurrentWeather] = useState();
   const [forecast, setForecast] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   async function onSearchChangeHandler(searchData) {
     const [lat, lon] = searchData.value.split(" ");
@@ -28,23 +27,15 @@ function App() {
       const currentWeatherData = await currentWeatherResponse.json();
       const forecastData = await forecastResponse.json();
 
-      // if (currentWeatherResponse.ok && forecastResponse.ok) {
-      //   setCurrentWeather({ city: searchData.label, ...currentWeatherData });
+      if (currentWeatherResponse.ok && forecastResponse.ok) {
+        setCurrentWeather({ city: searchData.label, ...currentWeatherData });
 
-      //   setForecast({ city: searchData.label, ...forecastData });
-      // }
-
-      if (!currentWeatherResponse.ok && !forecastResponse.ok) {
-        throw new Error("something went wrong,couldn't fetch data");
+        setForecast({ city: searchData.label, ...forecastData });
       }
-      setCurrentWeather({ city: searchData.label, ...currentWeatherData });
-
-      setForecast({ city: searchData.label, ...forecastData });
 
       setIsLoading(false);
     } catch (error) {
       console.log(error);
-      setError(error.message);
     }
   }
 
@@ -68,7 +59,6 @@ function App() {
 
       {currentWeather && <CurrentWeather data={currentWeather} />}
       {forecast && <Forecast data={forecast} />}
-      {error && !isLoading && <h1>{error}</h1>}
     </>
   );
 }
